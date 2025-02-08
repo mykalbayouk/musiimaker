@@ -1,11 +1,27 @@
 "use client"
-import react from "react";
-import { useState, useEffect } from 'react'
+
+"use client"
+import react, { useState, useEffect } from "react";
+
 import { useRouter } from 'next/navigation';
+
 import styles from "./Feed.module.css";
 import FeedObject from "./FeedObject"
+import SongModal from "./SongModal";
 
-export default function Feed() {
+
+    // const [viewSong, setViewSong] = useState(false);
+
+    // const toggleViewSong = () => {
+    //     setViewSong(!viewSong);
+    // }
+
+    // const handleSongClick = () => {
+    //     toggleViewSong()
+    //     console.log(viewSong);
+    // }
+
+export default function Feed(props: any) {
     const [title, setTitle] = useState("songTitlePlaceholder");
     const [username, setUsername] = useState('userNamePlaceHolder');
     const [song_file, setSongFile] = useState('https://wpe.hoffmanacademy.com/wp-content/uploads/2022/07/spring-example-copy-1024x665.jpg');
@@ -55,10 +71,12 @@ export default function Feed() {
         <div className={styles.feedDiv}>
             {feed.map((song, index) => (
                 <FeedObject 
+                    handleSongClick={props.handleSongClick}/>
                     key={index}
                     song={song}
                 />
             ))}
+            
         </div>
     )
 }
