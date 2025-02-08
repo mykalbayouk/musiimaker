@@ -43,6 +43,7 @@ app.get('/ping', async (req, res) => {
   });
 
   // USER ENDPOINTS
+  // Registration Endpoint
   app.post('/addUser', async (req, res) => {
     try {
       const {username, email, password} = req.body;
@@ -75,6 +76,7 @@ app.get('/ping', async (req, res) => {
     } 
   });
 
+  // Login endpoint
   app.post('/login', async (req, res) => {
     try {
       const {email, password} = req.body;
@@ -101,6 +103,7 @@ app.get('/ping', async (req, res) => {
   });
 
   // SONG ENDPOINTS
+  // Endpoint to add song to DB
   app.post('/addSong', async (req, res) => {
     try {
       const {title, username, song_file} = req.body;
@@ -120,5 +123,14 @@ app.get('/ping', async (req, res) => {
       console.error(err);
       res.status(500).json({ message: 'Failed to add Song'});
     }  
+  })
+
+  // Endpoint to get all songs from DB
+  app.get('/getSongs', async (req, res) => {
+    const db = client.db('Musiimaker');
+    const songsCollection = db.collection('Songs');
+    // gets all the songs and puts them into an array that is sent to the feed
+    const songList = await songsCollection.find().toArray();
+    res.json(songList);
   })
 
