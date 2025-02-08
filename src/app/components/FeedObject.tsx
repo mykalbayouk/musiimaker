@@ -1,10 +1,14 @@
-import react from "react";
+"use client"
+
+import react, { useState } from "react";
 import { useRouter } from 'next/navigation';
 import styles from "./FeedObject.module.css";
 
-export default function FeedObject() {
+export default function FeedObject(props: any) {
+    
+
     return(
-        <div className={styles.feedObj}>  
+        <div className={styles.feedObj} onClick={props.handleSongClick}>  
                 <div className={styles.top}>
                     <p>Song Title</p>
                     <p className={styles.right}>Creator Name</p> 
