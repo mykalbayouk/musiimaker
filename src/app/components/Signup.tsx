@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Navbar from "./Navbar";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
     interface User {
@@ -12,7 +14,7 @@ export default function Signup() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const router = useRouter();
     const handleUsernameChange = (event: any) => {
         setUsername(event.target.value);
     }
@@ -32,7 +34,7 @@ export default function Signup() {
         console.log(user);
     }
     return (
-        <div className="h-[830px]">
+        <div className="">
             <Navbar />            
             <div className="flex justify-center items-center h-[780px] w-full"> 
                 <div className="h-[400px] w-[400px] flex flex-col justify-center items-center border border-black rounded-[20px]">
@@ -43,7 +45,15 @@ export default function Signup() {
                         <input type="password" placeholder="password" className="border-b border-b-black outline-none m-2 w-[200px] transition duration-300 focus:shadow-[0_3px_3px_black] h-[35px] p-2" onChange={handlePasswordChange}/>
                         <button type="submit" className="border border-black p-2 rounded-full transition duration-150 hover:shadow-[0_3px_3px_black] m-2" onClick={onSignup}>Sign Up</button>
                     </form>
-                    <p className="h-[50px] flex items-center justify-center">Already have an account? Log in (make this a link)</p>
+                    <div className="w-[250px] flex justify-evenly">
+                        <p className="h-[50px] flex items-center justify-center">Already have an account? </p> 
+                        <div className="flex items-center">
+                            <Link className="border-b border-b-black transition duration-200 hover:shadow-[0_3px_3px_black]" href="/login">Log in</Link>
+                        </div>
+                        
+                        
+                    </div>
+                    
                 </div>
                 
             </div>
