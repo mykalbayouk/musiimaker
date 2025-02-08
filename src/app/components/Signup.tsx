@@ -35,14 +35,15 @@ export default function Signup() {
         <div className="h-[830px]">
             <Navbar />            
             <div className="flex justify-center items-center h-[780px] w-full"> 
-                <div className="h-[400px] w-[400px] flex flex-col justify-center items-center border border-black">
-                    <h1 className="text-lg border border-black w-1/4 text-center h-1/10">Sign Up</h1>
-                    <form className="h-[390px] flex flex-col w-[390px] items-center justify-center">
-                        <input type="text" placeholder="username" className="border border-black p-1 m-1" onChange={handleUsernameChange}/>
-                        <input type="email" placeholder="email" className="border border-black p-1 m-1" onChange={handleEmailChange}/>
-                        <input type="password" placeholder="password" className="border border-black p-1 m-1" onChange={handlePasswordChange}/>
-                        <button type="submit" className="border border-black p-2" onClick={onSignup}>Sign Up</button>
+                <div className="h-[400px] w-[400px] flex flex-col justify-center items-center border border-black rounded-[20px]">
+                    <h1 className="text-2xl w-1/4 text-center h-[50px] flex items-center">Sign Up</h1>
+                    <form className="h-[300px] flex flex-col w-[390px] items-center justify-center">
+                        <input type="text" placeholder="username" className="border-b border-b-black outline-none m-2 w-[200px] transition duration-300 focus:shadow-[0_3px_3px_black] h-[35px] p-2 " onChange={handleUsernameChange}/>
+                        <input type="email" placeholder="email" className="border-b border-b-black outline-none m-2 w-[200px] transition duration-300 focus:shadow-[0_3px_3px_black] h-[35px] p-2" onChange={handleEmailChange}/>
+                        <input type="password" placeholder="password" className="border-b border-b-black outline-none m-2 w-[200px] transition duration-300 focus:shadow-[0_3px_3px_black] h-[35px] p-2" onChange={handlePasswordChange}/>
+                        <button type="submit" className="border border-black p-2 rounded-full transition duration-150 hover:shadow-[0_3px_3px_black] m-2" onClick={onSignup}>Sign Up</button>
                     </form>
+                    <p className="h-[50px] flex items-center justify-center">Already have an account? Log in (make this a link)</p>
                 </div>
                 
             </div>
