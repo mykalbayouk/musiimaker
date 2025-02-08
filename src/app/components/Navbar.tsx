@@ -1,4 +1,3 @@
-// navbar component
 export default function Navbar() {
     return(
         <div className="border border-black w-full h-[50px] flex">
