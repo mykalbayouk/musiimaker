@@ -71,9 +71,9 @@ export default function Feed(props: any) {
         <div className={styles.feedDiv}>
             {feed.map((song, index) => (
                 <FeedObject 
-                    handleSongClick={props.handleSongClick}/>
                     key={index}
                     song={song}
+                    handleSongClick={props.handleSongClick}
                 />
             ))}
             
