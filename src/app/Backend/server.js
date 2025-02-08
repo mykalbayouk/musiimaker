@@ -1,5 +1,6 @@
 // db pass: JBPQY0r8GRKOfnHV
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors'); 
@@ -42,18 +43,19 @@ app.get('/ping', async (req, res) => {
   });
 
   // USER ENDPOINTS
+  // Registration Endpoint
   app.post('/addUser', async (req, res) => {
     try {
-      const {userName, email, password} = req.body;
+      const {username, email, password} = req.body;
       // connect to DB
-      const db = CLIENT_STATIC_FILES_RUNTIME_AMP.db('Musiimaker');
+      const db = client.db('Musiimaker');
       const usersCollection = db.collection('Users');
       // Check if email or username already exists
       const exisitingEmail = await usersCollection.findOne({email});
       if (exisitingEmail) {
         return res.status(400).json({ message: 'Email already in use'});
       }
-      const exisitingUser = await usersCollection.findOne({userName});
+      const exisitingUser = await usersCollection.findOne({username});
       if (exisitingUser) {
         return res.status(400).json({ message: 'Username already in use'});
       }
@@ -61,7 +63,7 @@ app.get('/ping', async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       // user doc
       const newUser = {
-        userName,
+        username,
         email,
         password: hashedPassword,
       };
@@ -74,17 +76,44 @@ app.get('/ping', async (req, res) => {
     } 
   });
 
+  // Login endpoint
+  app.post('/login', async (req, res) => {
+    try {
+      const {email, password} = req.body;
+      const db = client.db('Musiimaker');
+      const usersCollection = db.collection('Users');
+      // find user by email
+      const user = await usersCollection.findOne({email});
+      if (!user) {
+        return res.status(400).json({message: 'Invalid email or password!'});
+      }
+      // compare password
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(400).json({message: 'Invalid email or password!'});
+      }
+      // generate a JWT valid for two hours 
+      const token = jwt.sign({ userId: user._id, email: user.email }, 'secrew_jwt_secret', {expiresIn: '2h'});
+      res.status(200).json({message:'Login successful', token});
+      
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({message: 'Login failed'});
+    }
+  });
+
   // SONG ENDPOINTS
+  // Endpoint to add song to DB
   app.post('/addSong', async (req, res) => {
     try {
-      const {title, userName, song_file} = req.body;
+      const {title, username, song_file} = req.body;
       // connect to DB
       const db = client.db('Musiimaker');
       const songsCollection = db.collection('Songs');
       // song doc
       const newSong = ({
         title,
-        userName,
+        username,
         song_file,
       })
       // insert into DB
@@ -94,5 +123,14 @@ app.get('/ping', async (req, res) => {
       console.error(err);
       res.status(500).json({ message: 'Failed to add Song'});
     }  
+  })
+
+  // Endpoint to get all songs from DB
+  app.get('/getSongs', async (req, res) => {
+    const db = client.db('Musiimaker');
+    const songsCollection = db.collection('Songs');
+    // gets all the songs and puts them into an array that is sent to the feed
+    const songList = await songsCollection.find().toArray();
+    res.json(songList);
   })
 

@@ -12,8 +12,8 @@ export default function Navbar() {
                 <button onClick={() => router.push('/.')}>Musiimaker</button>
             </div>
             <div className={styles.button}>
-                <button onClick={() => router.push('/.')}> Log-In </button>
-                <button onClick={() => router.push('/.')}> Sign Up</button>
+                <button onClick={() => router.push('/login')}> Log-In </button>
+                <button onClick={() => router.push('/signup')}> Sign Up</button>
             </div>
         </div>
     )
