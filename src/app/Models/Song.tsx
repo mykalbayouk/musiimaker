@@ -1,6 +1,7 @@
 //Attributes of a User table
 const SongSchema = new Schema({
     userName: String,
+    title: String,
     song_file: String
 });
 
