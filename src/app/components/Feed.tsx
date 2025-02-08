@@ -22,35 +22,13 @@ import SongModal from "./SongModal";
     // }
 
 export default function Feed(props: any) {
-    const [title, setTitle] = useState("songTitlePlaceholder");
-    const [username, setUsername] = useState('userNamePlaceHolder');
-    const [song_file, setSongFile] = useState('https://wpe.hoffmanacademy.com/wp-content/uploads/2022/07/spring-example-copy-1024x665.jpg');
+   
     const [feed, setFeed] = useState([]);
 
     useEffect(() => {
         fetchFeed();
-        console.log(feed)
     }, [])
-    const uploadSong = async () => {
-        try {
-            const response = await fetch('http://localhost:2000/addSong', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                    title: title,
-                    username: username, 
-                    song_file: song_file}),
-            });
-            const data = await response.json();
-            if (response.ok) {
-                window.alert('Added song successfully!');
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
+    
 
     const fetchFeed = async () => {
         try {

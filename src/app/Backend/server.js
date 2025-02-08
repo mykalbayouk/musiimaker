@@ -106,15 +106,16 @@ app.get('/ping', async (req, res) => {
   // Endpoint to add song to DB
   app.post('/addSong', async (req, res) => {
     try {
-      const {title, username, song_file} = req.body;
+      const {username, title, instrument, file} = req.body;
       // connect to DB
       const db = client.db('Musiimaker');
       const songsCollection = db.collection('Songs');
       // song doc
       const newSong = ({
-        title,
         username,
-        song_file,
+        title,
+        instrument,
+        file,
       })
       // insert into DB
       await songsCollection.insertOne(newSong);
