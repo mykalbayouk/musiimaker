@@ -24,7 +24,7 @@ export default function Signup() {
     const handlePasswordChange = (event: any) => {
         setPassword(event.target.value);
     }
-    const onSignup = (event: any) => {
+    const onSignup = async (event: any) => {
         event.preventDefault()
         const user: User = {
             username: username,
@@ -32,6 +32,24 @@ export default function Signup() {
             password: password            
         }
         console.log(user);
+        try {
+            const response = await fetch('http://localhost:2000/addUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user)
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log('User Registered');
+                router.push('./');
+            } else {
+                window.alert(data.message);
+            }
+        } catch (err) {
+            console.error(err);
+        }
     }
     return (
         <div className="">

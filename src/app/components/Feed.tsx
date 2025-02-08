@@ -11,7 +11,6 @@ export default function Feed() {
     const [song_file, setSongFile] = useState('https://wpe.hoffmanacademy.com/wp-content/uploads/2022/07/spring-example-copy-1024x665.jpg');
     
     useEffect(() => {
-        uploadSong();
     }, [])
     const uploadSong = async () => {
         console.log(title);
