@@ -4,16 +4,15 @@ import react, { useState } from "react";
 import { useRouter } from 'next/navigation';
 import styles from "./FeedObject.module.css";
 
-export default function FeedObject(props: any) {
-    
+export default function FeedObject({song} : {song: any}, (props: any)) {
 
     return(
         <div className={styles.feedObj} onClick={props.handleSongClick}>  
                 <div className={styles.top}>
-                    <p>Song Title</p>
-                    <p className={styles.right}>Creator Name</p> 
+                    <p>{song.title}</p>
+                    <p className={styles.right}>{song.username}</p> 
                 </div>                
-            <img src={'https://wpe.hoffmanacademy.com/wp-content/uploads/2022/07/spring-example-copy-1024x665.jpg'}></img>
+            <img src={song.song_file}></img>
         </div>
     )
 }
