@@ -1,117 +1,161 @@
-"use client"
+import React, { use, useState, useEffect } from 'react';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import CommentList from './CommentList';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
-import { useState } from "react";
-import Comment from "./Comment";
-import { FaThumbsUp } from "react-icons/fa";
-import CommentList from "./CommentList";
-// import pdf from "../../../public/pdfs/testpdf.pdf";
-import PDFViewer from "./PDFViewer";
+const style = {
+    position: 'relative',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '90%',
+    height: '90%',
+    bgcolor: '#3E3A47',
+    boxShadow: 24,
+    p: 4,
+    borderRadius: '8px',
+    color: 'white',
+    display: 'flex',
+    flexDirection: 'column'
+};
 
-export default function SongModal(props: any) {
-    const [comment, setComment] = useState("");
-    const handleCommentChange = (event: any) => {
-        setComment(event.target.value);
-    }
-
-    const handleCommentSubmit = (event: any) => {
-        event.preventDefault()
-        console.log(comment);
-    }
-
-    interface Comment {
-        id: number,
-        comment: String,
-        username: String,
-        profile: String
-    }
-    const comments: Comment[] = [
-        {
-            id: 1,
-            comment: "Good song!",
-            username: "as31",
-            profile: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ8FmZ_KM3vykoIAP2VeE-c1e4KUVduPQUHQ&s"
-        },
-        {
-            id: 2,
-            comment: "nice very nice",
-            username: "michael",
-            profile: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ8FmZ_KM3vykoIAP2VeE-c1e4KUVduPQUHQ&s"
-        },
-        {
-            id: 3,
-            comment: "cool",
-            username: "jack",
-            profile: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ8FmZ_KM3vykoIAP2VeE-c1e4KUVduPQUHQ&s"
-        },
-        {
-            id: 4,
-            comment: "wow",
-            username: "lester",
-            profile: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ8FmZ_KM3vykoIAP2VeE-c1e4KUVduPQUHQ&s"
-        },
-        {
-            id: 5,
-            comment: "interesting!",
-            username: "choi",
-            profile: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ8FmZ_KM3vykoIAP2VeE-c1e4KUVduPQUHQ&s"
-        },
-        {
-            id: 6,
-            comment: "very good piece",
-            username: "aaron",
-            profile: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ8FmZ_KM3vykoIAP2VeE-c1e4KUVduPQUHQ&s"
-        }
-    ]
-    return (
-        <div className="bg-black bg-opacity-25 top-0 bottom-0 left-0 right-0 fixed flex flex-col items-center justify-center" >
-            <div className="border border-black bg-white w-5/6 h-5/6 flex max-w-11/12 max-h-11/12 flex-col">
-                <div className="h-12 w-full flex justify-end">
-                    <button onClick={props.handleSongClick} className="text-5xl flex items-center justify-center"> X </button>
-                </div>
-                <div className="border border-black flex w-full h-[656px]">
-                    <div className="h-full w-1/2">
-                        
-                        <h1 className="font-bold text-4xl">Comments</h1>
-                        <CommentList comments={comments}/>
-                        <div className="flex border border-black">
-                            <input type="text" placeholder="Leave a comment..." className="border-b border-b-black w-4/5" onChange={handleCommentChange}></input>
-                            <div className="flex justify-around w-1/5">
-                                <button type="submit" onClick={handleCommentSubmit} className="border border-black flex items-center justify-center text-center text-5xl w-1/2">&#8594;</button>
-                                <div className="border border-black w-1/2 flex items-center"><FaThumbsUp className="w-full" size={40}/></div>
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <div className="h-full w-1/2 flex items-center justify-center border-l border-l-black">
-                        <PDFViewer />
-                    </div>
-                </div>
-
-                
-                
-            </div>
-        </div>
-    )
+interface Comment {
+    id: number;
+    comment: string;
+    username: string;
+    profile: string;
 }
 
-{/* <div className="h-8 flex justify-end">
-                    <button onClick={.handleSongClick} className="border border-black p-1 rounded-full flex items-center"> X </button>
-                </div>
-                <div className="h-[584px]">
-                    <div className="flex justify h-1/2">
-                        <div className="border border-black w-1/12 flex items-center"><FaThumbsUp className="w-full" size={40}/></div>
-                        <div className="border border-black w-11/12 overflow-y-scroll"><PDFViewer /></div>
-                    </div>
-                    <div className="h-1/2">
-                        <div>
-                            <h1 className="font-bold">Comments</h1>
-                            <CommentList comments={comments} />
-                            <div className="flex border border-black">
-                                <input type="text" placeholder="Leave a comment..." className="border-b border-b-black w-4/5" onChange={handleCommentChange}></input>
-                                <button type="submit" onClick={handleCommentSubmit} className="border border-black flex items-center">&#8594;</button>
-                            </div>
-                            
-                            
+
+
+export default function SongModal(props: any) {
+    let commentCreate = '';
+    let decodedToken: JwtPayload | null = null;
+    let profilePic = '';
+    const token = localStorage.getItem('token');
+    const [commentsState, setComments] = useState<Map<number, Comment>>(new Map());
+
+
+    if (!token) {
+        console.error('No token found');
+    } else {
+        try {
+            decodedToken = jwt.decode(token) as JwtPayload;
+        } catch (error) {
+            console.error('Error decoding token:', error);
+        }
+    }
+
+    
+    useEffect(() => {
+        if (!decodedToken) return;
+        const getProfile = async () => {
+            try {
+                const response = await fetch("http://localhost:2000/getCurrentUser", {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get profile');
+                }
+
+                const data = await response.json();
+                profilePic = data.picture;
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        };
+        setComments(props.commentsDB);
+        getProfile();
+    }, [decodedToken, token]);
+
+    console.log("comments state: " + commentsState);
+    
+
+    const handleCommentSubmit = async (event: any) => {
+        event.preventDefault();
+        
+        
+
+        const comment: Comment = {
+            id: commentsState ? commentsState.size : 0,
+            comment: commentCreate,
+            username: decodedToken?.username || 'Anonymous',
+            profile: profilePic
+        };
+
+        const commentMap = new Map(commentsState);
+        commentMap.set(comment.id, comment);
+        setComments(commentMap);
+        
+        const obj = Object.fromEntries(commentMap);
+        const json = JSON.stringify(obj);
+        
+        try {
+            const response = await fetch(`http://localhost:2000/updateSong/${props.songId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: json
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update comment');
+            }
+
+            const data = await response.json();
+            console.log(commentsState)
+        } catch (error) {
+            console.error('Error updating comment:', error);
+        }
+    };
+
+    return (
+        <Modal
+            open={props.open}
+            onClose={props.handleSongClick}
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+        >
+            <Box sx={style}>
+                <div className="flex h-full">
+                    <div className="w-2/3 flex flex-col p-4">
+                        <div className="flex-grow overflow-y-auto">
+                            <CommentList comments={commentsState} />
                         </div>
+                        <form className="flex mt-4" onSubmit={handleCommentSubmit}>
+                            <input
+                                type="text"
+                                placeholder="Leave a comment..."
+                                className="border border-gray-300 rounded-l-md p-2 w-4/5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                onChange={(event) => {
+                                    commentCreate = event.target.value;
+                                }}
+                            />
+                            <button
+                                type="submit"
+                                className="bg-gray-500 text-white rounded-r-md p-2 w-1/5 hover:bg-blue-600"
+                            >
+                                Post
+                            </button>
+                        </form>
                     </div>
-                </div> */}
+                    <div className="w-1/2 flex items-center justify-center border-l border-l-black">
+                        <embed
+                            src={URL.createObjectURL(props.file)}
+                            type="application/pdf"
+                            width="100%"
+                            height="100%"
+                        />
+                    </div>
+                </div>
+            </Box>
+        </Modal>
+    );
+}

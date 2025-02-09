@@ -176,7 +176,7 @@ app.get('/ping', async (req, res) => {
         return res.status(403).json({ message: 'Invalid or expired token' });
       }
   
-      const username = decoded.username; // Extract username from JWT
+      const username = decoded.username; 
   
       const {title, instrument, file} = req.body;
       // connect to DB
@@ -209,10 +209,30 @@ app.get('/ping', async (req, res) => {
       if (!song) {
         return res.status(404).json({ message: 'Song not found' });
       }
+      console.log("comments: ", song.comment);
       res.status(200).json(song);
     } catch (err) {
       console.error("Error fetching song by ID: ", err);
       res.status(500).json({ message: 'Failed to fetch song' });
+    }
+  });
+  // Endpoint to update the comment of a song by ID
+  app.put('/updateSong/:id', async (req, res) => {
+    try {
+      const id = req.params;
+      const comment  = req.body;
+      const db = client.db('Musiimaker');
+      const songsCollection = db.collection('Songs');
+      // Update the song document with the new comment
+      const result = await songsCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { comment: comment } }
+      );
+
+      res.status(200).json({ message: 'Comment added successfully' });
+    } catch (err) {
+      console.error("Error updating comment: ", err);
+      res.status(500).json({ message: 'Failed to update comment' });
     }
   });
 
@@ -264,5 +284,33 @@ app.get('/ping', async (req, res) => {
     } catch (err) {
       console.error("Error fetching current user's songs: ", err);
       res.status(500).json({message:'Failed to fetch current user songs'});
+    }
+  })
+
+  app.get("/getCurrentUser", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) {
+        return res.status(401).json({message: "Authentication token is missing"});
+      }
+      let decoded;
+      try {
+        decoded = jwt.verify(token, "secret_jwt_secret");
+      } catch (err) {
+        return res.status(403).json({message: "Invalid or expired token"});
+      }
+      const username = decoded.username
+      
+      const db = client.db("Musiimaker");
+      const usersCollection = db.collection('Users');
+      const currentUser = await usersCollection.findOne({username});
+            
+      if (!currentUser) {
+        return res.status(404).json({ message: 'Current user not found' });
+      }
+      res.status(200).json(currentUser);
+    } catch (err) {
+      console.error("Error fetching current user: ", err);
+      res.status(500).json({message: "Failed to fetch current user"});
     }
   })

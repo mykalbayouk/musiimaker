@@ -2,8 +2,8 @@
 const SongSchema = new Schema({
     userName: String,
     title: String,
-    song_file: String,
-    comments: Array
+    file: String,
+    comment: Map,
 });
 
 const Song = mongoose.model('Song', SongSchema);
