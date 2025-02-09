@@ -19,6 +19,7 @@ interface SubmitButtonProps {
   loadingText: string;
   className?: string;
   loading?: boolean;
+  onClick: any
 }
 
 export function SubmitButton({
@@ -26,6 +27,7 @@ export function SubmitButton({
   loadingText,
   loading,
   className,
+  onClick
 }: Readonly<SubmitButtonProps>) {
   const status = useFormStatus();
   return (
@@ -34,6 +36,7 @@ export function SubmitButton({
       aria-disabled={status.pending || loading}
       disabled={status.pending || loading}
       className={cn(className)}
+      onClick={onClick}
     >
       {status.pending || loading ? <Loader text={loadingText} /> : text}
     </Button>
