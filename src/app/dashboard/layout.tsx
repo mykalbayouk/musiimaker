@@ -1,10 +1,16 @@
+"use client"
 import Link from "next/link";
-
+import { useRouter } from 'next/navigation'
 export default function DashboardLayout({
   children,
 }: {
   readonly children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    router.push("/login");
+  }
   return (
     <div className="h-screen grid grid-cols-[240px_1fr]">
       <nav className="border-r bg-gray-100/40 dark:bg-gray-800/40">
@@ -28,13 +34,13 @@ export default function DashboardLayout({
                 <ProfileIcon className="h-4 w-4" />
                 Profile
               </Link>
-              <Link
+              <button
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="/"
+              onClick={handleLogout}
               >
                 <LogoutIcon className="h-4 w-4" />
                 Logout
-              </Link>
+              </button>
             </nav>
           </div>
         </div>
