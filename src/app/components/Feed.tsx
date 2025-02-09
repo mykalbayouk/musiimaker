@@ -10,17 +10,6 @@ import FeedObject from "./FeedObject"
 import SongModal from "./SongModal";
 
 
-    // const [viewSong, setViewSong] = useState(false);
-
-    // const toggleViewSong = () => {
-    //     setViewSong(!viewSong);
-    // }
-
-    // const handleSongClick = () => {
-    //     toggleViewSong()
-    //     console.log(viewSong);
-    // }
-
 export default function Feed(props: any) {
    
     const [feed, setFeed] = useState([]);

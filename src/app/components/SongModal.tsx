@@ -4,6 +4,8 @@ import { useState } from "react";
 import Comment from "./Comment";
 import { FaThumbsUp } from "react-icons/fa";
 import CommentList from "./CommentList";
+// import pdf from "../../../public/pdfs/testpdf.pdf";
+import PDFViewer from "./PDFViewer";
 
 export default function SongModal(props: any) {
     const [comment, setComment] = useState("");
@@ -61,15 +63,44 @@ export default function SongModal(props: any) {
         }
     ]
     return (
-        <div className="bg-black bg-opacity-25 top-0 bottom-0 left-0 right-0 fixed flex items-center justify-center">
-            <div className="border border-black bg-white w-11/12 h-11/12 flex flex-col">
-                <div className="h-8 flex justify-end">
-                    <button onClick={props.handleSongClick} className="border border-black p-1 rounded-full flex items-center"> X </button>
+        <div className="bg-black bg-opacity-25 top-0 bottom-0 left-0 right-0 fixed flex flex-col items-center justify-center" >
+            <div className="border border-black bg-white w-5/6 h-5/6 flex max-w-11/12 max-h-11/12 flex-col">
+                <div className="h-12 w-full flex justify-end">
+                    <button onClick={props.handleSongClick} className="text-5xl flex items-center justify-center"> X </button>
+                </div>
+                <div className="border border-black flex w-full h-[656px]">
+                    <div className="h-full w-1/2">
+                        
+                        <h1 className="font-bold text-4xl">Comments</h1>
+                        <CommentList comments={comments}/>
+                        <div className="flex border border-black">
+                            <input type="text" placeholder="Leave a comment..." className="border-b border-b-black w-4/5" onChange={handleCommentChange}></input>
+                            <div className="flex justify-around w-1/5">
+                                <button type="submit" onClick={handleCommentSubmit} className="border border-black flex items-center justify-center text-center text-5xl w-1/2">&#8594;</button>
+                                <div className="border border-black w-1/2 flex items-center"><FaThumbsUp className="w-full" size={40}/></div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div className="h-full w-1/2 flex items-center justify-center border-l border-l-black">
+                        <PDFViewer />
+                    </div>
+                </div>
+
+                
+                
+            </div>
+        </div>
+    )
+}
+
+{/* <div className="h-8 flex justify-end">
+                    <button onClick={.handleSongClick} className="border border-black p-1 rounded-full flex items-center"> X </button>
                 </div>
                 <div className="h-[584px]">
                     <div className="flex justify h-1/2">
                         <div className="border border-black w-1/12 flex items-center"><FaThumbsUp className="w-full" size={40}/></div>
-                        <div className="border border-black w-11/12 overflow-y-scroll"><img className="w-full" src="https://wpe.hoffmanacademy.com/wp-content/uploads/2022/07/spring-example-copy-1024x665.jpg"/></div>
+                        <div className="border border-black w-11/12 overflow-y-scroll"><PDFViewer /></div>
                     </div>
                     <div className="h-1/2">
                         <div>
@@ -83,8 +114,4 @@ export default function SongModal(props: any) {
                             
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    )
-}
+                </div> */}
