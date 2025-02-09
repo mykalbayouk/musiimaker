@@ -7,13 +7,54 @@ import {
 } from "@spotify/basic-pitch";
 import { Midi } from "@tonejs/midi";
 import getWeb from "./midiConvert";
+import { on } from "events";
 
 /**
  * Inputs source of audio file and returns a pdf file
  * @param src 
  * @returns 
  */
-const getSheetMusic = async (src: string): Promise<File> => {
+const getSheetMusic = async (src: File, difficulty:number, onsetThresh:number, offsetThresh:number, minNoteLength:number): Promise<File> => {
+  console.log(`Source: ${src.name}, Difficulty: ${difficulty}, Onset Threshold: ${onsetThresh}, Offset Threshold: ${offsetThresh}, Min Note Length: ${minNoteLength}`);
+
+  if (onsetThresh === 0 || offsetThresh === 0 || minNoteLength === 0) {
+  switch(difficulty){
+    case 1:
+      onsetThresh = 2;
+      offsetThresh = .8;
+      minNoteLength = 5;
+      break;
+    case 2:
+      onsetThresh = 1.5;
+      offsetThresh = 0.8;
+      minNoteLength = 5;
+      break;
+    case 3:
+      onsetThresh = 1;
+      offsetThresh = 0.5;
+      minNoteLength = 5;
+      break;
+    case 4:
+      onsetThresh = .8;
+      offsetThresh = 0.3;
+      minNoteLength = 5;
+      break;
+    case 5:
+      onsetThresh = .7;
+      offsetThresh = 0.1;
+      minNoteLength = 4;
+      break;
+    default:
+      onsetThresh = .5;
+      offsetThresh = .1;
+      minNoteLength = 3;
+      break;
+  }
+} else {
+
+}
+
+console.log(`Source: ${src.name}, Difficulty: ${difficulty}, Onset Threshold: ${onsetThresh}, Offset Threshold: ${offsetThresh}, Min Note Length: ${minNoteLength}`);
   // Creates an audio context
   const audioCtx = new AudioContext({
     sampleRate: 22050,
@@ -21,7 +62,7 @@ const getSheetMusic = async (src: string): Promise<File> => {
 
   // Fetches the audio file and decodes it
   const buffer = await new Promise<AudioBuffer>(async (res, rej) => {
-    audioCtx.decodeAudioData(await (await fetch(src)).arrayBuffer(), res, rej);
+    audioCtx.decodeAudioData(await src.arrayBuffer(), res, rej);
   });
 
   const mono = buffer.getChannelData(0);
@@ -83,7 +124,7 @@ const getSheetMusic = async (src: string): Promise<File> => {
   const notes = noteFramesToTime(
     addPitchBendsToNoteEvents(
       contours,
-      outputToNotesPoly(frames, onsets, 2, .8, 5, true),
+      outputToNotesPoly(frames, onsets, onsetThresh, offsetThresh, minNoteLength, true),
     )
   );
   console.log(notes);
