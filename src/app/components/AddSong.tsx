@@ -25,13 +25,16 @@ export default function AddSong() {
     const handleUpload = async (event: any) => {
         event.preventDefault();
         const song: Song = {
-            //username: username,
             title: title,
             instrument: instrument,
             file: "https://www.davidsides.com/cdn/shop/files/01.Twinkle_Twinkle_LittleStar_Page_1_707f2ff7-8eb8-47a4-b055-bea4fc58ff84.png?v=1704573370"
         }
        console.log(song)
        const token = localStorage.getItem('token');
+       if (!token) {
+        window.alert('You must be logged in to upload a song');
+        return;
+       }
         try {
             const response = await fetch('http://localhost:2000/addSong', {
                 method: 'POST',
@@ -40,7 +43,6 @@ export default function AddSong() {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({ 
-                    //username: username, 
                     title: title,
                     instrument: instrument,
                     file: file}),
@@ -54,29 +56,7 @@ export default function AddSong() {
         }
     }
 
-    const uploadSong = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            const response = await fetch('http://localhost:2000/addSong', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ 
-                    //username: username, 
-                    title: title,
-                    instrument: instrument,
-                    file: file}),
-            });
-            const data = await response.json();
-            if (response.ok) {
-                window.alert('Added song successfully!');
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
+    
     return (
         <div>
             <Navbar />
