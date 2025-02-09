@@ -3,7 +3,7 @@
 import Navbar from "./components/Navbar";
 import Feed from "./components/Feed"
 import styles from "./page.module.css"
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SongModal from "./components/SongModal";
 
 export default function Home() {
@@ -18,7 +18,6 @@ export default function Home() {
           console.log(viewSong);
       }
 
-      
   return (
     <div>
       <Navbar />

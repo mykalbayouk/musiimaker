@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { SubmitButton } from "@/app/components/custom/SubmitButton";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
+import Image from "next/image";
 
 interface ProfileFormProps {
     id: string;
@@ -49,7 +50,12 @@ export function ProfileForm({
                         placeholder="Email"
                         defaultValue={data?.email || ""}
                         disabled />
-                    
+                    <Image 
+                        src="/public/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA5L3Jhd3BpeGVsX29mZmljZV8yOF9mZW1hbGVfbWluaW1hbF9yb2JvdF9mYWNlX29uX2RhcmtfYmFja2dyb3VuZF81ZDM3YjhlNy04MjRkLTQ0NWUtYjZjYy1hZmJkMDI3ZTE1NmYucG5n.png"
+                        alt="Profile Picture"
+                        width={100}
+                        height={100}
+                        className="rounded-full border" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
