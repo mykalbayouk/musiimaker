@@ -1,19 +1,34 @@
 .feedObj {
     display: flex;
     flex-direction: column;
-    font-family: 'Montserrat';
-    border-style: solid;
-    
+
+    border: 2px solid #ccc; /* Soft border */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    overflow: hidden;
+    background: #fff; /* Clean background */
+    width: 50%; /* Set a fixed width */
+    cursor: pointer; /* Indicate interactivity */
+    transition: transform 0.2s ease-in-out;
+}
+
+.feedObj:hover {
+    transform: scale(1.02); /* Slight hover effect */
+
 }
 
 .top {
     display: flex;
     flex-direction: row;
-    justify-content: left;
-    align-items: baseline;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #f7f7f7; /* Light background for contrast */
+    font-weight: bold;
+    color: #666;
 }
 
 .right {
-    margin-left: auto;
+    color: #666; /* Slightly dim text */
 }
 

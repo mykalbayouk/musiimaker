@@ -9,10 +9,12 @@ export default function DashboardLayout({
   readonly children: React.ReactNode;
 }) {
   const router = useRouter();
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('token');
     router.push("/login");
   }
+
+
   return (
     <div className="h-screen grid grid-cols-[240px_1fr]">
       <nav className="border-r bg-gray-100/40 dark:bg-gray-800/40">
