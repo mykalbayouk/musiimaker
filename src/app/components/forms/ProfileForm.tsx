@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 import { SubmitButton } from "@/app/components/custom/SubmitButton";
@@ -11,20 +11,7 @@ interface ProfileFormProps {
     id: string;
     username: string;
     email: string;
-    firstName: string;
-    lastName: string;
-    songList: string;
     credits: number;
-}
-
-function CountBox({ text }: { readonly text: number }) {
-    const style = "font-bold text-md mx-1";
-    const color = text > 0 ? "text-primary" : "text-red-500";
-    return (
-        <div className="flex items-center justify-center h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none">
-            You have<span className={cn(style, color)}>{text}</span>musii$
-        </div>
-    )
 }
 
 export function ProfileForm({
@@ -34,6 +21,73 @@ export function ProfileForm({
     readonly data: ProfileFormProps;
     readonly className?: string;
 }) {
+    const [loading, setLoading] = useState(true);
+    const [username, setUsername] = useState();
+    const [email, setEmail] = useState();
+    const [id, setId] = useState()
+    const [profilePictureURL, setProfilePictureURL] = useState("https://images.pexels.com/photos/104084/pexels-photo-104084.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")
+    let newPicture: String = "";
+   
+    const handlePictureURLChange = (event: any) => {
+        setProfilePictureURL(event.target.value)
+    }
+    const handleProfileUpdate = (event: any) => {
+        
+        const updateProfile = async() => {
+            const response = await (fetch("http://localhost:2000/updateProfile", {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    
+                    newPictureURL: newPicture,
+                    userId: id
+                })
+            }))
+            
+            const data = await response.json()
+            if (response.ok) {
+                window.alert("Profile updated successfully")
+            }
+        }
+        updateProfile()
+    }
+
+    const token = localStorage.getItem("token");
+    
+    useEffect(() => {
+        try {
+            const getUser = async() => {
+                const response = await fetch("http://localhost:2000/getCurrentUser", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error(errorData.message || 'Failed to fetch songs');
+                } 
+                const data = await response.json();
+                setUsername(data.username);
+                setEmail(data.email);
+                setId(data._id);
+                setProfilePictureURL(data.picture)
+                console.log(data)
+
+            };
+            getUser();
+            setLoading(false);
+        } catch (err) {
+            console.error("Error", err);
+        }
+    }, [])
+
+    if (loading){
+        return <div>Loading</div>
+    }
     return (
         <form className={cn("space-y-4", className)}>
             <div className="space-y-4 grid">
@@ -41,32 +95,28 @@ export function ProfileForm({
                     <Input
                         id="username"
                         name="username"
-                        placeholder="Username"
+                        placeholder={username || ""}
                         defaultValue={data?.username || ""}
                         disabled />
                     <Input
                         id="email"
                         name="email"
-                        placeholder="Email"
+                        placeholder={email || ""}
                         defaultValue={data?.email || ""}
                         disabled />
-                    <Image 
-                        src="/public/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA5L3Jhd3BpeGVsX29mZmljZV8yOF9mZW1hbGVfbWluaW1hbF9yb2JvdF9mYWNlX29uX2RhcmtfYmFja2dyb3VuZF81ZDM3YjhlNy04MjRkLTQ0NWUtYjZjYy1hZmJkMDI3ZTE1NmYucG5n.png"
+                    <img 
+                        src={profilePictureURL}
                         alt="Profile Picture"
-                        width={100}
-                        height={100}
-                        className="rounded-full border" />
+                        className="rounded-full border w-[100px] h-[100px]" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                    <Input id="firstName" name="firstName" placeholder="First Name" defaultValue={data?.firstName || ""} />
-                    <Input id="lastName" name="lastName" placeholder="Last Name" defaultValue={data?.lastName || ""} />
+                    <Input id="picture" name="picture" placeholder="Picture URL" onChange={(event) => newPicture = event.target.value } />
                 </div>
-                <Textarea id="songList" name="songList" placeholder="implement song list later" className="resize-none border rounded-md w-full h-[244px] p-2" defaultValue={data?.songList || ""} required />
             </div>
 
             <div className="flex justify-end">
-                <SubmitButton text="Update Profile" loadingText="Saving Profile" />
+                <SubmitButton onClick={handleProfileUpdate} text="Update Profile" loadingText="Saving Profile" />
             </div>
         </form>
     )

@@ -102,6 +102,63 @@ app.get('/ping', async (req, res) => {
     }
   });
 
+  app.get("/getCurrentUser", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) {
+        return res.status(401).json({message: "Authentication token is missing"});
+      }
+      let decoded;
+      try {
+        decoded = jwt.verify(token, "secret_jwt_secret");
+      } catch (err) {
+        return res.status(403).json({message: "Invalid or expired token"});
+      }
+      const username = decoded.username
+      
+      const db = client.db("Musiimaker");
+      const usersCollection = db.collection('Users');
+      const currentUser = await usersCollection.findOne({username});
+            
+      if (!currentUser) {
+        return res.status(404).json({ message: 'Current user not found' });
+      }
+      console.log(currentUser)
+      res.status(200).json(currentUser);
+    } catch (err) {
+      console.error("Error fetching current user: ", err);
+      res.status(500).json({message: "Failed to fetch current user"});
+    }
+  })
+
+  app.put("/updateProfile", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.split(" ")[1]
+      if (!token) {
+        return res.status(401).json({message: "Authentication token is missing"});
+      }
+      let decoded;
+      try {
+        decoded = jwt.verify(token, "secret_jwt_secret");
+      } catch (err) {
+        return res.status(403).json({message: "Invalid or expired token"});
+      }
+      
+      const profileToUpdate = req.body.userId
+      const newPictureURL = req.body.newPictureURL
+      
+      
+      const db = client.db("Musiimaker")
+      const usersCollection = db.collection('Users')
+      await usersCollection.updateOne({_id: new ObjectId(profileToUpdate)}, {$set: {picture: newPictureURL}}, )
+      res.status(200).json({message: "profile updated successfully"})
+
+    } catch (err) {
+      console.log(err)
+      res.status(400).json({message: "profile was not able to update"})
+    }
+  })
+
   // SONG ENDPOINTS
   // Endpoint to add song to DB
   app.post('/addSong', async (req, res) => {
@@ -193,6 +250,8 @@ app.get('/ping', async (req, res) => {
       res.status(500).json({message:'Failed to fetch current user songs'});
     }
   })
+
+  
 
   //Endpoint to get songs by a username
   app.get('/getSongs/:username', async (req,res) => {
