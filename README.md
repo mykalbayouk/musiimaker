@@ -1,3 +1,13 @@
+Musiimaker is a web application that converts mp3 files into pdfs of sheet music.
+
+Created by: Michael Bayouk, Jackson Greer, Amani Lester, and Ashiq Syed.
+
+Created using Typescript, Next.js, Node, and MongoDB.
+
+The main problems that we encountered were with Version Control. We often had merge conflicts and package dependency issues but we were able to communicate the reasons that these occurred. Overall the project flowed smoothly and we created almost all of the features that we had originally intended for.
+
+We used Spotify's Basic Pitch and Tonejs's Midi packages to create the functionality of the mp3 to pdf converter.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
