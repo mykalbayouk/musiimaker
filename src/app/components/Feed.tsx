@@ -9,30 +9,55 @@ import styles from "./Feed.module.css";
 import FeedObject from "./FeedObject"
 import SongModal from "./SongModal";
 
-
-    // const [viewSong, setViewSong] = useState(false);
-
-    // const toggleViewSong = () => {
-    //     setViewSong(!viewSong);
-    // }
-
-    // const handleSongClick = () => {
-    //     toggleViewSong()
-    //     console.log(viewSong);
-    // }
-
 export default function Feed(props: any) {
    
     const [feed, setFeed] = useState([]);
 
     useEffect(() => {
-        fetchFeed();
+        //fetchFeed();
+        fetchSpecificUserSongs("jlg");
     }, [])
     
 
     const fetchFeed = async () => {
         try {
             const response = await fetch('http://localhost:2000/getSongs', {
+                method: 'GET',            
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error(errorData.message || 'Failed to fetch songs');
+            } 
+            const data = await response.json();
+            setFeed(data);
+        } catch (err) {
+            console.error('Error fetching songs: ', err)
+        }
+    }
+
+    const fetchCurrentUserSongs = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('http://localhost:2000/getCurrentUserSongs', {
+                method: 'GET',
+                headers: { 
+                    Authorization: `Bearer ${token}`, 
+                }, 
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error(errorData.message || 'Failed to fetch songs');
+            } 
+            const data = await response.json();
+            setFeed(data);
+        } catch (err) {
+            console.error('Error fetching songs: ', err)
+        }
+    }
+
+    const fetchSpecificUserSongs = async (username: String) => {
+        try {
+            const response = await fetch(`http://localhost:2000/getSongs/${username}`, {
                 method: 'GET',
             });
             if (!response.ok) {
@@ -45,6 +70,7 @@ export default function Feed(props: any) {
             console.error('Error fetching songs: ', err)
         }
     }
+
     return(
         <div className={styles.feedDiv}>
             {feed.map((song, index) => (
