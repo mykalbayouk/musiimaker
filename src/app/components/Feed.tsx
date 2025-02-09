@@ -14,8 +14,7 @@ export default function Feed(props: any) {
     const [feed, setFeed] = useState([]);
 
     useEffect(() => {
-        //fetchFeed();
-        fetchSpecificUserSongs("jlg");
+        fetchFeed();
     }, [])
     
 
