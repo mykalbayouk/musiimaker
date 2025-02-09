@@ -93,7 +93,7 @@ app.get('/ping', async (req, res) => {
         return res.status(400).json({message: 'Invalid email or password!'});
       }
       // generate a JWT valid for two hours 
-      const token = jwt.sign({ userId: user._id, email: user.email }, 'secrew_jwt_secret', {expiresIn: '2h'});
+      const token = jwt.sign({ username: user.username }, 'secret_jwt_secret', {expiresIn: '2h'});
       res.status(200).json({message:'Login successful', token});
       
     } catch (err) {
@@ -106,15 +106,31 @@ app.get('/ping', async (req, res) => {
   // Endpoint to add song to DB
   app.post('/addSong', async (req, res) => {
     try {
-      const {title, username, song_file} = req.body;
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) {
+        return res.status(401).json({ message: 'Authentication token is missing' });
+      }
+  
+      // Verify and decode token
+      let decoded;
+      try {
+        decoded = jwt.verify(token, 'secret_jwt_secret');
+      } catch (err) {
+        return res.status(403).json({ message: 'Invalid or expired token' });
+      }
+  
+      const username = decoded.username; // Extract username from JWT
+  
+      const {title, instrument, file} = req.body;
       // connect to DB
       const db = client.db('Musiimaker');
       const songsCollection = db.collection('Songs');
       // song doc
       const newSong = ({
-        title,
         username,
-        song_file,
+        title,
+        instrument,
+        file,
       })
       // insert into DB
       await songsCollection.insertOne(newSong);
