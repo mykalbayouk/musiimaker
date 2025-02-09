@@ -39,7 +39,7 @@ export default function DashBoardRoute() {
     }
 
     return (
-        <div className="grid grid-cols-3 items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="grid grid-cols-3 gap-4 justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 place-items-center">
             {grid.map((song, index) => (
                 <FeedObject 
                     key={index}
