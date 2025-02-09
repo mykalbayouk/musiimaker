@@ -1,6 +1,17 @@
 .feedDiv {
     background-color: #6D5D6E;
     border: double 2px #393646;
-    border-radius: 2px;
-    padding: 10px;
+    border-radius: 8px; 
+    padding: 20px; 
+    
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 15px; 
+
+    justify-content: center;
+    align-items: center; 
+    place-items: center; 
+    
+    width: fit-content;
+    margin: 0 auto; 
 }

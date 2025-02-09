@@ -12,7 +12,7 @@ export default function FeedObject(props: any) {
                     <p>{props.song.title}</p>
                     <p className={styles.right}>{props.song.username}</p> 
                 </div>                
-            <img src={props.song.song_file}></img>
+            <img src={props.song.song_file} alt={props.song.title}></img>
         </div>
     )
 }
