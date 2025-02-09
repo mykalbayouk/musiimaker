@@ -8,14 +8,25 @@ import SongModal from "./components/SongModal";
 
 export default function Home() {
   const [viewSong, setViewSong] = useState(false);
-  
+  const [comments, setComments] = useState([]);
       const toggleViewSong = () => {
-          setViewSong(!viewSong);
+        setViewSong(!viewSong);
       }
   
-      const handleSongClick = () => {
+      const handleSongClick = async (id: any) => {
           toggleViewSong()
-          console.log(viewSong);
+          console.log(id)
+          try {
+            // const token = localStorage.getItem("token");
+            const res = await fetch(`http://localhost:2000/getSong/${id}`, {
+              method: "GET",
+            })
+            const data = await res.json();
+            console.log(data)
+            //setComments(data.comments);
+          } catch(err) {
+            console.error(err)
+          }
       }
 
   return (
@@ -24,7 +35,7 @@ export default function Home() {
       <div className={styles.mainDiv}>
         <div></div>
         <Feed handleSongClick={handleSongClick}/>
-        {viewSong ? <SongModal handleSongClick={handleSongClick}/> : <></>}
+        {viewSong ? <SongModal handleSongClick={handleSongClick} comments={comments}/> : <></>}
         <div></div>
       </div>
     </div>
