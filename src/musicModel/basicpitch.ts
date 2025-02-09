@@ -13,7 +13,7 @@ import getWeb from "./midiConvert";
  * @param src 
  * @returns 
  */
-const getSheetMusic = async (src:string):Promise<File> => {
+const getSheetMusic = async (src: string): Promise<File> => {
   // Creates an audio context
   const audioCtx = new AudioContext({
     sampleRate: 22050,
@@ -25,6 +25,7 @@ const getSheetMusic = async (src:string):Promise<File> => {
   });
 
   const mono = buffer.getChannelData(0);
+
 
   const frames: number[][] = [];
   const onsets: number[][] = [];
@@ -41,23 +42,66 @@ const getSheetMusic = async (src:string):Promise<File> => {
       onsets.push(...o);
       contours.push(...c);
     },
-    () => {}
+    () => { }
   );
-  
   // Convert the note frames to time
+  /**
+   * onsets: An onset activation matrix identifies the specific points in time when new notes begin. 
+   * Each value in the matrix indicates the likelihood of a note starting at that time and frequency. 
+   * Detecting onsets accurately is vital for correctly identifying the start of notes.
+
+  onsetThresh: This threshold sets the minimum amplitude of an onset activation that must be reached to consider 
+  it an actual onset of a note. This helps in filtering out false positives and ensuring that only significant 
+  note beginnings are recognized.
+
+  frameThresh: This threshold is used to determine whether a note should continue. 
+  If the amplitude of a frame activation drops below this level, 
+  it indicates that the note has ended or is too soft to be considered as continuing.
+
+  minNoteLen: This defines the minimum length a note must have to be recognized. 
+  This is measured in frames, not time directly, 
+  helping to prevent the recognition of very short, possibly erroneous notes.
+
+  inferOnsets: When this setting is true, the algorithm will automatically add onsets if there are 
+  large differences in frame amplitudes, suggesting a significant change in the audio that 
+  likely corresponds to a new note starting.
+
+  maxFreq and minFreq: These settings define the frequency range within 
+  which notes can be recognized. Frequencies outside this range will be 
+  ignored, which can be useful for filtering out noise or other unwanted audio components.
+
+  melodiaTrick: This involves a specific enhancement where semitones 
+  near a peak in frequency data are removed, presumably to clean up the data and avoid misinterpretation of 
+  pitches that are close to actual note peaks.
+
+  energyTolerance: This parameter allows a certain number of frames to drop 
+  below the threshold (potentially zero amplitude) without terminating the note. This can help in maintaining the 
+  continuity of notes through brief drops in sound level.
+   */
+  // simple songs 2 .8 5
+  // moderate songs .5 .3 5
   const notes = noteFramesToTime(
     addPitchBendsToNoteEvents(
       contours,
-      outputToNotesPoly(frames, onsets, 0.2, 0.2, 5, true)
+      outputToNotesPoly(frames, onsets, 2, .8, 5, true),
     )
   );
-  
+  console.log(notes);
+
   // Convert the notes array to base64
   const base64 = await convertMidiFile(notes);
 
-  // Convert the base64 to a file
-  const file = midiFile(base64);
+  console.log(base64);
 
+  // Convert the base64 to a file
+  // const link = document.createElement("a");
+  // link.href = URL.createObjectURL(new Blob([base64], { type: "audio/midi" }));
+  // link.download = "output.mid";
+  // document.body.appendChild(link);
+  // link.click();
+  // document.body.removeChild(link);
+
+  const file = midiFile(base64);
   return getWeb(file);
 };
 
@@ -77,7 +121,7 @@ const convertMidiFile = (notes: NoteEventTime[]) => {
       velocity: note.amplitude,
     });
   });
-  
+
   const base64 = blobToBase64(
     new Blob([midi.toArray()], { type: "audio/midi" })
   );
