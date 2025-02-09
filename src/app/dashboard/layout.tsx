@@ -1,6 +1,8 @@
 "use client"
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
+import { CardFooter } from "@/app/components/ui/card";
+
 export default function DashboardLayout({
   children,
 }: {
@@ -41,6 +43,16 @@ export default function DashboardLayout({
                 <LogoutIcon className="h-4 w-4" />
                 Logout
               </button>
+              <Link 
+              className="flex items-center gap-3 rounded-lg py-2"
+              href="/add-song">
+              <CardFooter className="flex flex-col">
+                <button className="w-full flex items-center gap-3 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                  <ButtonIcon className="h-4 w-4" />
+                  Add Song
+                  </button>
+              </CardFooter>
+              </Link>
             </nav>
           </div>
         </div>
@@ -112,7 +124,7 @@ function ProfileIcon(props: any) {
   );
 }
 
-function ViewIcon(props: any) {
+function ButtonIcon(props: any) {
   return (
     <svg
       {...props}
@@ -126,10 +138,9 @@ function ViewIcon(props: any) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M5 12s2.545-5 7-5c4.454 0 7 5 7 5s-2.546 5-7 5c-4.455 0-7-5-7-5z" />
-      <path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-      <path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2" />
-      <path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2" />
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="16"></line>
+      <line x1="8" y1="12" x2="16" y2="12"></line>
     </svg>
   );
 }

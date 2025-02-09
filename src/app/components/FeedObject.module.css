@@ -1,6 +1,9 @@
 .feedObj {
     display: flex;
     flex-direction: column;
+    font-family: 'Montserrat';
+    border-style: solid;
+    
 }
 
 .top {
