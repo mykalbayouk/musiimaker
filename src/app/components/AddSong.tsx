@@ -1,6 +1,4 @@
 "use client"
-
-import { Sliders } from "lucide-react";
 import Navbar from "./Navbar";
 import { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
