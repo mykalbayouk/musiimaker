@@ -34,25 +34,7 @@ export default function Feed(props: any) {
         }
     }
 
-    const fetchCurrentUserSongs = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            const response = await fetch('http://localhost:2000/getCurrentUserSongs', {
-                method: 'GET',
-                headers: { 
-                    Authorization: `Bearer ${token}`, 
-                }, 
-            });
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error(errorData.message || 'Failed to fetch songs');
-            } 
-            const data = await response.json();
-            setFeed(data);
-        } catch (err) {
-            console.error('Error fetching songs: ', err)
-        }
-    }
+    
 
     const fetchSpecificUserSongs = async (username: String) => {
         try {
