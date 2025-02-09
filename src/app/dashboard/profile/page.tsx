@@ -1,5 +1,7 @@
 import { getUserMeLoader } from "@/data/services/get-user-me-loader";
 import { ProfileForm } from "@/app/components/forms/ProfileForm";
+import React from 'react';
+
 export default async function AccountRoute() {
     const user = await getUserMeLoader();
     const userData = user.data;
