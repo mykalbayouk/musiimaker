@@ -141,6 +141,24 @@ app.get('/ping', async (req, res) => {
     }  
   })
 
+  
+  // Endpoint to get a song by ID
+  app.get('/getSong/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const db = client.db('Musiimaker');
+      const songsCollection = db.collection('Songs');
+      const song = await songsCollection.findOne({ _id: new ObjectId(id) });
+      if (!song) {
+        return res.status(404).json({ message: 'Song not found' });
+      }
+      res.status(200).json(song);
+    } catch (err) {
+      console.error("Error fetching song by ID: ", err);
+      res.status(500).json({ message: 'Failed to fetch song' });
+    }
+  });
+
   // Endpoint to get all songs from DB
   app.get('/getSongs', async (req, res) => {
     const db = client.db('Musiimaker');
