@@ -150,3 +150,42 @@ app.get('/ping', async (req, res) => {
     res.json(songList);
   })
 
+  // Endpoint to get THE CURRENT user's songs
+  app.get('/getCurrentUserSongs', async (req,res) => {
+    try {
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) {
+        return res.status(401).json({ message: 'Authentication token is missing' });
+      }
+      let decoded;
+      try {
+        decoded = jwt.verify(token, 'secret_jwt_secret');
+      } catch (err) {
+        return res.status(403).json({ message: 'Invalid or expired token' });
+      }
+  
+      const username = decoded.username;
+
+      const db = client.db('Musiimaker');
+      const songsCollection = db.collection('Songs');
+      const currentUserSongs = await songsCollection.find({ username: username}).toArray();
+      res.status(200).json(currentUserSongs);
+    } catch (err) {
+      console.error("Error fetching current user's songs: ", err);
+      res.status(500).json({message:'Failed to fetch current user songs'});
+    }
+  })
+
+  //Endpoint to get songs by a username
+  app.get('/getSongs/:username', async (req,res) => {
+    try {
+      const { username } = req.params;
+      const db = client.db('Musiimaker');
+      const songsCollection = db.collection('Songs');
+      const currentUserSongs = await songsCollection.find({ username: username}).toArray();
+      res.status(200).json(currentUserSongs);
+    } catch (err) {
+      console.error("Error fetching current user's songs: ", err);
+      res.status(500).json({message:'Failed to fetch current user songs'});
+    }
+  })
